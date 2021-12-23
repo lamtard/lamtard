@@ -1,0 +1,38 @@
+{
+	"name": "lamtard/lamtard",
+	"description": "Service providing Asynchronous communication and updates to the host servers vps related stuff.",
+	"type": "project",
+	"keywords": [
+		"server",
+		"administration",
+		"vps"
+	],
+	"minimum-stability": "dev",
+	"license": "LGPL-2.1-or-later",
+	"authors": [
+		{
+			"name": "Joe Huss",
+			"email": "detain@interserver.net"
+		}
+	],
+	"require": {
+		"php": ">=7.0.0",
+		"workerman/workerman": "dev-master",
+	},
+	"require-dev": {
+		"phpunit/phpunit": "*",
+		"vlucas/phpdotenv": "*",
+		"codeclimate/php-test-reporter": "dev-master",
+		"satooshi/php-coveralls": "*",
+		"codacy/coverage": "dev-master"
+	},
+	"suggest": {
+		"ext-event": "*",
+		"ext-ev": "*"
+	},
+	"config": {
+		"minimum-stability": "dev",
+		"optimize-autoloader": true,
+		"sort-packages": true
+	}
+}
