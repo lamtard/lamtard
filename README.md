@@ -21,6 +21,14 @@ the project aims to process mail as fast as possible, with a pluggable architect
 - [ ] https://tools.ietf.org/html/rfc3501 imap
 - [ ] https://tools.ietf.org/html/rfc822 mail content analysis
 
+## Benchmarking
+
+Tools
+
+- smtpping
+- postal
+
+Install with `apt install smtpping postal`
 
 ## Related Projects for reference
 

@@ -17,6 +17,7 @@
 	],
 	"require": {
 		"php": ">=7.0.0",
+		"php-mime-mail-parser/php-mime-mail-parser": "dev-master",
 		"workerman/workerman": "dev-master"
 	},
 	"require-dev": {
