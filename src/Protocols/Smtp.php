@@ -35,8 +35,7 @@ class Smtp implements ProtocolInterface
      */
     public static function encode($buffer, ConnectionInterface $connection)
     {
-        // json serialization, and add a newline character as a mark of the end of the request
-        return json_encode($buffer)."\n";
+        return $buffer."\r\n";
     }
 
     /**
@@ -49,6 +48,6 @@ class Smtp implements ProtocolInterface
     public static function decode($buffer, ConnectionInterface $connection)
     {
         // Remove the line breaks and restore to an array
-        return json_decode(trim($buffer), true);
+        return trim($buffer);
     }
 }

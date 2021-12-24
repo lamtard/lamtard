@@ -1,64 +1,47 @@
 <?php
 
 use Workerman\Worker;
+use \Workerman\Connection\ConnectionInterface;
 
-$worker = new Worker('smtp://0.0.0.0:25');
+require_once __DIR__ . '/../vendor/autoload.php';
+$worker = new Worker('smtp://0.0.0.0:2525');
 Worker::$logFile = 'MailServerWorker.log';
 $worker->count = 1;
 $worker->name = 'Smtp Server';
 
-$worker->onConnect = function($connection)
-{
+$worker->onConnect = function(ConnectionInterface $connection) {
 	//var_dump('SmtpServer onConnect');
 	$connection->send('220 Welcome to Smtp Server on PHPMailServer.');
 };
-$worker->onMessage = function($connection,$msg)
-{
-	if(isset($connection->startData) and $connection->startData)
-	{
-		if($msg != '.')
-		{
+$worker->onMessage = function(ConnectionInterface $connection,$msg) {
+	if(isset($connection->startData) and $connection->startData) {
+		if($msg != '.') {
 			$connection->user['data'] .= $msg;
-		}
-		else
-		{
+		} else {
 			$connection->startData = FALSE;
-
 			$tomail = str_replace([' ','<','>'],'',$connection->user['to']);
 			list($user,$host) = explode('@',$tomail);
-
-			//不是自已域名,转发
+			//Not own domain name, forward
 			//var_dump(gethostbyname($host),gethostbyaddr($_SERVER['SERVER_ADDR']));
-			if($host != '0.0.1')
-			{
+			if($host != '0.0.1') {
 				getmxrr($host,$mxhosts,$weight);
 				$mx = $mxhosts[array_search(max($weight),$weight)];
 				$smtpServerIp = gethostbyname($mx);
 			}
-
 			$data = $connection->user['data'];
-
 			$mailUid = md5($connection->user['id'].time());
 			$connection->user['data'] = $mailUid;
-
 			file_put_contents('../data/'.$mailUid.'.txt',$data);
-
 			$connection->user['size'] = filesize('../data/'.$mailUid.'.txt');
-
-			if(!file_exists('../data/mailLists.json'))
-			{
+			if(!file_exists('../data/mailLists.json')) {
 				$mailLists = [];
-			}
-			else
-			{
+			} else {
 				$mailLists = json_decode(file_get_contents('../data/mailLists.json'),TRUE);
 			}
-
 			$mailLists[] = $connection->user;
 			file_put_contents('../data/mailLists.json',json_encode($mailLists,JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT));
 			unset($mailLists);
 		}
-
 		$connection->send('250 OK');
 	}
 	else
@@ -69,43 +52,37 @@ $worker->onMessage = function($connection,$msg)
 		@list($cmd,$arg) = explode(' ',$msg,2);
 		restore_error_handler();
 		$cmd = strtolower($cmd);
-
 		switch($cmd)
 		{
-			case 'ehlo'://邮件发送会话开始
+			case 'ehlo':// mail sending session started
 				$connection->user = [
 					'id'=>$arg,
 				];
-
 				$connection->send('250 OK');
 				break;
-			case 'mail'://通过标识邮件的发件人来标识邮件传输开始
+			case 'mail':// Identifies the start of the mail transmission by identifying the sender of the mail
 				$args = explode(':',$arg);
 				$connection->user['from'] = isset($args[1])?trim($args[1]):'';
-
 				$connection->send('250 OK');
 				break;
-			case 'rcpt'://标识邮件的收件人
+			case 'rcpt':// identify the recipient of the mail
 				$args = explode(':',$arg);
 				$connection->user['to'] = isset($args[1])?trim($args[1]):'';
-
 				$connection->send('250 OK');
 				break;
-			case 'data'://开始传输邮件内容
+			case 'data':// start to transmit the content of the mail
 				$connection->user['data'] = '';
 				$connection->startData = TRUE;
-
 				$connection->send('354 OK');
 				break;
-			case 'quit'://会话结束
+			case 'quit':// session end
 				$connection->send('250 OK');
+				$connection->close();
 				break;
 		}
 	}
 };
-$worker->onClose = function($connection)
-{
+$worker->onClose = function(ConnectionInterface $connection) {
 	//var_dump('SmtpServer onClose');
 };
-
 Worker::runAll();

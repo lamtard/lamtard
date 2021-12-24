@@ -10,10 +10,10 @@ the project aims to process mail as fast as possible, with a pluggable architect
 
 ## RFCs and Specs
 
-* https://tools.ietf.org/html/rfc1939 pop3
-* https://tools.ietf.org/html/rfc5321 smtp
-* https://tools.ietf.org/html/rfc3501 imap
-* https://tools.ietf.org/html/rfc822 mail content analysis
+[ ] https://tools.ietf.org/html/rfc1939 pop3
+[x] https://tools.ietf.org/html/rfc5321 smtp
+[ ] https://tools.ietf.org/html/rfc3501 imap
+[ ] https://tools.ietf.org/html/rfc822 mail content analysis
 
 
 ## Related Projects for reference
