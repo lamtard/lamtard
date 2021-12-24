@@ -12,7 +12,7 @@ the project aims to process mail as fast as possible, with a pluggable architect
 
 - [ ] https://tools.ietf.org/html/rfc1939 pop3
 - [x] https://tools.ietf.org/html/rfc5321 smtp
-  - ~~[x] https://tools.ietf.org/html/rfc2821
+  - [x] ~~https://tools.ietf.org/html/rfc2821
     - [x] https://tools.ietf.org/html/rfc821
     - [x] https://tools.ietf.org/html/rfc974
     - [x] https://tools.ietf.org/html/rfc1869
